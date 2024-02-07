@@ -44,14 +44,14 @@ class TestBaseModel_instantiation(unittest.TestCase):
         self.assertNotEqual(bm1.id, bm2.id)
 
     def test_two_models_different_created_at(self):
-        """Test that two BaseModel instances have different created_at times."""
+        """Test two BaseModel instances have different created_at times."""
         bm1 = BaseModel()
         sleep(0.05)
         bm2 = BaseModel()
         self.assertLess(bm1.created_at, bm2.created_at)
 
     def test_two_models_different_updated_at(self):
-        """Test that two BaseModel instances have different updated_at times."""
+        """Test two BaseModel instances have different updated_at times."""
         bm1 = BaseModel()
         sleep(0.05)
         bm2 = BaseModel()
@@ -155,3 +155,64 @@ class TestBaseModel_save(unittest.TestCase):
         bmid = "BaseModel." + bm.id
         with open("file.json", "r") as f:
             self.assertIn(bmid, f.read())
+
+
+class TestBaseModel_to_dict(unittest.TestCase):
+    """Unittests for testing to_dict method of the BaseModel class."""
+
+    def test_to_dict_type(self):
+        """Test type of to_dict output."""
+        bm = BaseModel()
+        self.assertTrue(dict, type(bm.to_dict()))
+
+    def test_to_dict_contains_correct_keys(self):
+        """Test that to_dict output contains correct keys."""
+        bm = BaseModel()
+        self.assertIn("id", bm.to_dict())
+        self.assertIn("created_at", bm.to_dict())
+        self.assertIn("updated_at", bm.to_dict())
+        self.assertIn("_class_", bm.to_dict())
+
+    def test_to_dict_contains_added_attributes(self):
+        """Test that to_dict output contains added attributes."""
+        bm = BaseModel()
+        bm.name = "Holberton"
+        bm.my_number = 98
+        self.assertIn("name", bm.to_dict())
+        self.assertIn("my_number", bm.to_dict())
+
+    def test_to_dict_datetime_attributes_are_strs(self):
+        """Test that datetime attributes in to_dict output are strings."""
+        bm = BaseModel()
+        bm_dict = bm.to_dict()
+        self.assertEqual(str, type(bm_dict["created_at"]))
+        self.assertEqual(str, type(bm_dict["updated_at"]))
+
+    def test_to_dict_output(self):
+        """Test the content of to_dict output."""
+        dt = datetime.today()
+        bm = BaseModel()
+        bm.id = "123456"
+        bm.created_at = bm.updated_at = dt
+        tdict = {
+            'id': '123456',
+            '_class_': 'BaseModel',
+            'created_at': dt.isoformat(),
+            'updated_at': dt.isoformat()
+        }
+        self.assertDictEqual(bm.to_dict(), tdict)
+
+    def test_contrast_to_dict_dunder_dict(self):
+        """Test difference between to_dict and _dict_."""
+        bm = BaseModel()
+        self.assertNotEqual(bm.to_dict(), bm._dict_)
+
+    def test_to_dict_with_arg(self):
+        """Test to_dict method with argument."""
+        bm = BaseModel()
+        with self.assertRaises(TypeError):
+            bm.to_dict(None)
+
+
+if _name_ == "_main_":
+    unittest.main()
