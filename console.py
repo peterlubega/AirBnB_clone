@@ -44,7 +44,8 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
-    valid_classes = {"BaseModel", "User", "State", "City", "Place", "Amenity", "Review"}
+    valid_classes = {"BaseModel", "User", "State",
+                     "City", "Place", "Amenity", "Review"}
 
     def emptyline(self):
         """Do nothing upon receiving an empty line."""
@@ -95,7 +96,7 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
 
     def do_show(self, arg):
-        """Display the string representation of a class instance of a given id."""
+        """Display string representing class instance of a given id."""
         arg_list = parse_arguments(arg)
         obj_dict = storage.all()
 
@@ -129,13 +130,18 @@ class HBNBCommand(cmd.Cmd):
         if arg_list and arg_list[0] not in HBNBCommand.valid_classes:
             print("** class doesn't exist **")
         else:
-            obj_list = [str(obj) for obj in storage.all().values() if not arg_list or arg_list[0] == obj.__class__.__name__]
+            obj_list = [
+                str(obj)
+                for obj in storage.all().values()
+                if not arg_list or arg_list[0] == obj._class.name_
+            ]
             print(obj_list)
 
     def do_count(self, arg):
         """Retrieve the number of instances of a given class."""
         arg_list = parse_arguments(arg)
-        count = sum(1 for obj in storage.all().values() if arg_list and arg_list[0] == obj.__class__.__name__)
+        count = sum(1 for obj in storage.all().values()
+                    if arg_list and arg_list[0] == obj.__class__.__name__)
         print(count)
 
     def do_update(self, arg):
@@ -179,7 +185,8 @@ class HBNBCommand(cmd.Cmd):
     def update_with_dictionary(self, obj, attribute_dict):
         """Update attributes of a class instance using a dictionary."""
         for key, value in attribute_dict.items():
-            if key in obj.__class__.__dict__.keys() and type(obj.__class__.__dict__[key]) in {str, int, float}:
+            if key in obj.__class__.__dict__.keys() and \
+               type(obj.__class__.__dict__[key]) in {str, int, float}:
                 value_type = type(obj.__class__.__dict__[key])
                 obj.__dict__[key] = value_type(value)
             else:
