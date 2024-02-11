@@ -8,7 +8,7 @@ from datetime import datetime
 class BaseModel:
     """Represents the BaseModel of the HBnB project."""
 
-    def _init_(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Initialize a new BaseModel.
 
         Args:
@@ -50,13 +50,13 @@ class BaseModel:
         Includes the key/value pair class_name representing
         the class name of the object.
         """
-        result_dict = self._dict_.copy()
+        result_dict = self.__dict__.copy()
         result_dict["created_at"] = self.created_at.isoformat()
         result_dict["updated_at"] = self.updated_at.isoformat()
-        result_dict["class_name"] = self._class.name_
+        result_dict["class_name"] = self.__class__.__name__
         return result_dict
 
-    def _str_(self):
+    def __str__(self):
         """Return the print/str representation of the BaseModel instance."""
-        class_name = self._class.name_
-        return f"[{class_name}] ({self.id}) {self._dict_}"
+        class_name = self.__class__.__name__
+        return f"[{class_name}] ({self.id}) {self.__dict__}"
