@@ -26,7 +26,7 @@ class FileStorage:
 
     def new(self, obj):
         """Set in __objects obj with key <obj_class_name>.id"""
-        ocname = obj._class.name_
+        ocname = obj.__class__.__name__
         FileStorage.__objects["{}.{}".format(ocname, obj.id)] = obj
 
     def save(self):
@@ -44,7 +44,7 @@ class FileStorage:
                 for o in objdict.values():
                     """Check if 'class_name' key is present"""
                     if 'class_name' not in o:
-                        raise KeyError("'class_name' key_missing in obj data")
+                        raise KeyError("'class_name' is missing in obj data.")
 
                     cls_name = o["class_name"]
                     del o["class_name"]
