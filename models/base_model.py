@@ -6,9 +6,9 @@ from datetime import datetime
 
 
 class BaseModel:
-    """Represents the BaseModel of the HBnB project."""
+    """Represents the BaseModel of the AirBnB project."""
 
-    def _init_(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Initialize a new BaseModel.
 
         Args:
@@ -16,7 +16,7 @@ class BaseModel:
             **kwargs (dict): Key/value pairs of attributes.
         """
         """Date and time format for parsing strings"""
-        date_time_format = "%Y-%m-%dT%H:%M:%S.%f"
+        DT_format = "%Y-%m-%dT%H:%M:%S.%f"
 
         """Generate a unique ID using uuid4()"""
         self.id = str(uuid4())
@@ -31,8 +31,7 @@ class BaseModel:
                 try:
                     """Use setattr for dynamic attribute assignment"""
                     if key == "created_at" or key == "updated_at":
-                        pd = datetime.strptime(value, date_time_format)
-                        setattr(self, key, pd)
+                        setattr(self, key, datetime.strptime(value, DT_format))
                     else:
                         setattr(self, key, value)
                 except ValueError:
@@ -40,10 +39,7 @@ class BaseModel:
                     print(f"Error parsing {key}: {value}. Skipping.")
 
         else:
-            """
-            If no keyword arguments are provided,
-            add the instance to models.storage
-            """
+            """If no keyword arguments, add the instance to models.storage"""
             models.storage.new(self)
 
     def save(self):
@@ -54,13 +50,13 @@ class BaseModel:
     def to_dict(self):
         """Return the dictionary of the BaseModel instance.
 
-        Includes the key/value pair _class_ representing
+        Includes the key/value pair __class__ representing
         the class name of the object.
         """
-        result_dict = self._dict_.copy()
+        result_dict = self.__dict__.copy()
         result_dict["created_at"] = self.created_at.isoformat()
         result_dict["updated_at"] = self.updated_at.isoformat()
-        result_dict["_class"] = self.class.name_
+        result_dict["__class__"] = self.__class__.__name__
         return result_dict
 
     def __str__(self):
