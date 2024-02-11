@@ -6,9 +6,9 @@ from datetime import datetime
 
 
 class BaseModel:
-    """Represents the BaseModel of the AirBnB project."""
+    """Represents the BaseModel of the HBnB project."""
 
-    def __init__(self, *args, **kwargs):
+    def _init_(self, *args, **kwargs):
         """Initialize a new BaseModel.
 
         Args:
@@ -20,10 +20,6 @@ class BaseModel:
 
         """Generate a unique ID using uuid4()"""
         self.id = str(uuid4())
-
-        """Set created_at and updated_at attributes to the current datetime"""
-        self.created_at = datetime.today()
-        self.updated_at = datetime.today()
 
         """If keyword arguments are provided, process them"""
         if kwargs:
@@ -37,9 +33,10 @@ class BaseModel:
                 except ValueError:
                     """Handle datetime parsing errors gracefully"""
                     print(f"Error parsing {key}: {value}. Skipping.")
-
         else:
-            """If no keyword arguments, add the instance to models.storage"""
+            """If no args, set created_at & updated_at to current datetime"""
+            self.created_at = datetime.today()
+            self.updated_at = datetime.today()
             models.storage.new(self)
 
     def save(self):
@@ -50,16 +47,16 @@ class BaseModel:
     def to_dict(self):
         """Return the dictionary of the BaseModel instance.
 
-        Includes the key/value pair __class__ representing
+        Includes the key/value pair class_name representing
         the class name of the object.
         """
-        result_dict = self.__dict__.copy()
+        result_dict = self._dict_.copy()
         result_dict["created_at"] = self.created_at.isoformat()
         result_dict["updated_at"] = self.updated_at.isoformat()
-        result_dict["__class__"] = self.__class__.__name__
+        result_dict["class_name"] = self._class.name_
         return result_dict
 
-    def __str__(self):
+    def _str_(self):
         """Return the print/str representation of the BaseModel instance."""
-        class_name = self.__class__.__name__
-        return f"[{class_name}] ({self.id}) {self.__dict__}"
+        class_name = self._class.name_
+        return f"[{class_name}] ({self.id}) {self._dict_}"
